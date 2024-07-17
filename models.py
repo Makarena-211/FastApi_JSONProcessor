@@ -50,3 +50,4 @@ class Application(BaseModel):
 
 #     app = Application(kind=doc['kind'], name=doc['name'], version=doc['version'], description=doc['description'], configuration=doc['configuration'])
 #     print(app)
+
