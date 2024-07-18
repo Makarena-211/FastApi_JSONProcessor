@@ -10,13 +10,17 @@ from typing import Dict
 import models
 from pydantic import ValidationError
 from sqlalchemy.orm.attributes import flag_modified
+from kafka.kafka_producer import sent_message
+import json
 router = APIRouter()
 
 
 @router.get('/get')
 def get_from_db(database: session=Depends(get_db)):
     applications = database.query(db.Applications).all()
-    return {'data':applications}
+    applications_json = {'data':applications}
+    sent_message("application_recieved", {})
+    return applications_json
 
 @router.post('/post', response_model=schema.ApplicationResponse)
 def write_to_db(data: models.Application, database: session = Depends(get_db)):
@@ -30,7 +34,7 @@ def write_to_db(data: models.Application, database: session = Depends(get_db)):
     database.add(new_app)
     database.commit()
     database.refresh(new_app)
-    
+    sent_message("application_posted", {})
     return new_app
 
 @router.get('/get_state/{id}')
@@ -38,6 +42,7 @@ def get_state_from_app(id: UUID, database: session=Depends(get_db)):
     application = database.query(db.Applications).filter(db.Applications.id == id).first()
     if not application:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+    sent_message("application_state_recieved", {})
     return {"state": application.state}
 
 @router.delete('/delete/{id}')
@@ -45,6 +50,7 @@ def delete_app_from_db(id:UUID, database:session=Depends(get_db)):
     application = database.query(db.Applications).filter(db.Applications.id == id).first()
     if not application:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+    sent_message("application_deleted", {})
     database.delete(application)
     database.commit()
     return database
@@ -55,6 +61,7 @@ def change_app_state(id:UUID, state:str, database:session=Depends(get_db)):
     if not application:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
     application.state = state
+    sent_message("application_state_updated", {})
     database.commit()
     return {"Message": "State changed successfully!"}, database
 
@@ -69,6 +76,7 @@ def change_specification(id: UUID, specification: Dict, database: session = Depe
     except ValidationError as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     application.json_data["configuration"]["specification"] = new_specification.dict()
+    sent_message("application_specification_updated", {})
     flag_modified(application, "json_data")
     database.commit()
 
@@ -84,6 +92,7 @@ def update_settings(id: UUID, settings:Dict, database: session = Depends(get_db)
     except ValidationError as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     application.json_data["configuration"]["settings"] = new_settings.dict()
+    sent_message("application_settings_updated", {})
     flag_modified(application, "json_data")
     database.commit()
     

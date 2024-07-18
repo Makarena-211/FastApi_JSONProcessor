@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 
-db_url = "postgresql+psycopg2://postgres:password@127.0.0.1:5433/postgres"
+db_url = "postgresql+psycopg2://postgres:password@127.0.0.1:5433/postgres"   
 engine = create_engine(db_url)
 Sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

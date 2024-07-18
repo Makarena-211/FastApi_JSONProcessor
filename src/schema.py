@@ -13,13 +13,17 @@ class ApplicationBase(BaseModel):
     
     class Config:
         orm_mode = True
+        
 
 class CreateApplication(ApplicationBase):
     class Config:
         orm_mode = True
-
+        
 
 class ApplicationResponse(ApplicationBase):
     id: UUID
     class Config:
         orm_mode = True
+        json_encoders = {
+            UUID: str,
+        }
