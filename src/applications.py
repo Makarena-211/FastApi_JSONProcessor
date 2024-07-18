@@ -15,7 +15,7 @@ import json
 router = APIRouter()
 
 
-@router.get('/get')
+@router.get('/get', response_model=schema.ApplicationResponse)
 def get_from_db(database: session=Depends(get_db)):
     applications = database.query(db.Applications).all()
     applications_json = {'data':applications}
@@ -60,10 +60,13 @@ def change_app_state(id:UUID, state:str, database:session=Depends(get_db)):
     application = database.query(db.Applications).filter(db.Applications.id == id).first()
     if not application:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+    valid_states = ['NEW', 'INSTALLING', 'RUNNING']
+    if state not in valid_states:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Invalid state '{state}'. Valid states are: {valid_states}")
     application.state = state
     sent_message("application_state_updated", {})
     database.commit()
-    return {"Message": "State changed successfully!"}, database
+    return {"Message": "State changed successfully"}
 
 
 @router.put('/change_spec/{kind}/{id}/{configuration}')
