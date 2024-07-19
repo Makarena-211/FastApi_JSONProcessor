@@ -70,15 +70,12 @@ def change_app_state(id:UUID, state:str, database:session=Depends(get_db)):
 
 
 @router.put('/change_spec/{kind}/{id}/{configuration}')
-def change_specification(id: UUID, specification: Dict, database: session = Depends(get_db)):
+def change_specification(id: UUID, specification: models.Configuration, database: session = Depends(get_db)):
     application = database.query(db.Applications).filter(db.Applications.id == id).first()
     if not application:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-    try:
-        new_specification = models.Specification(**specification)
-    except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
-    application.json_data["configuration"]["specification"] = new_specification.dict()
+    
+    application.json_data["configuration"]["specification"] = specification.dict()
     sent_message("application_specification_updated", {})
     flag_modified(application, "json_data")
     database.commit()
@@ -86,15 +83,11 @@ def change_specification(id: UUID, specification: Dict, database: session = Depe
     return application
 
 @router.put("/update_settings/{id}", response_model=schema.ApplicationResponse)
-def update_settings(id: UUID, settings:Dict, database: session = Depends(get_db)):
+def update_settings(id: UUID, settings:models.Settings, database: session = Depends(get_db)):
     application = database.query(db.Applications).filter(db.Applications.id == id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application not found")
-    try:
-        new_settings = models.Settings(**settings)
-    except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
-    application.json_data["configuration"]["settings"] = new_settings.dict()
+    application.json_data["configuration"]["settings"] = settings.dict()
     sent_message("application_settings_updated", {})
     flag_modified(application, "json_data")
     database.commit()
