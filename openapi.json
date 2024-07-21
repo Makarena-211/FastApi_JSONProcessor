@@ -1,0 +1,534 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "FastAPI Json Processor",
+      "description": "Приложение, которое производит операции с json\n\n                /get - получает все записи из БД \n\n                /post - записывает json в БД \n\n                /get_state/{id} - получает параметр state по id из БД \n\n                /delete/{id} - удаляет запись из БД по id \n\n                /put/{id} - меняет параметр state на один из допущенных \n\n                /change_spec/{kind}/{id}/{configuration} - меняет значение congiguration внутри json_data \n\n                /update_settings/{id} - меняет значение settings внутри json_data\n              ",
+      "version": "0.1.0"
+    },
+    "paths": {
+      "/get": {
+        "get": {
+          "summary": "Get From Db",
+          "operationId": "get_from_db_get_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/post": {
+        "post": {
+          "summary": "Write To Db",
+          "operationId": "write_to_db_post_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationResponse"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/get_state/{id}": {
+        "get": {
+          "summary": "Get State From App",
+          "operationId": "get_state_from_app_get_state__id__get",
+          "parameters": [
+            {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid",
+                "title": "Id"
+              },
+              "name": "id",
+              "in": "path"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+  
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/delete/{id}": {
+        "delete": {
+          "summary": "Delete App From Db",
+          "operationId": "delete_app_from_db_delete__id__delete",
+          "parameters": [
+            {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid",
+                "title": "Id"
+              },
+              "name": "id",
+              "in": "path"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+  
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/put/{id}": {
+        "put": {
+          "summary": "Change App State",
+          "operationId": "change_app_state_put__id__put",
+          "parameters": [
+            {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid",
+                "title": "Id"
+              },
+              "name": "id",
+              "in": "path"
+            },
+            {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "State"
+              },
+              "name": "state",
+              "in": "query"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+  
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/change_spec/{kind}/{id}/{configuration}": {
+        "put": {
+          "summary": "Change Specification",
+          "operationId": "change_specification_change_spec__kind___id___configuration__put",
+          "parameters": [
+            {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid",
+                "title": "Id"
+              },
+              "name": "id",
+              "in": "path"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Specification"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+  
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/update_settings/{id}": {
+        "put": {
+          "summary": "Update Settings",
+          "operationId": "update_settings_update_settings__id__put",
+          "parameters": [
+            {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid",
+                "title": "Id"
+              },
+              "name": "id",
+              "in": "path"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Settings"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ApplicationResponse"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Application": {
+          "properties": {
+            "kind": {
+              "type": "string",
+              "title": "Kind"
+            },
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+              "title": "Version"
+            },
+            "description": {
+              "type": "string",
+              "title": "Description"
+            },
+            "configuration": {
+              "$ref": "#/components/schemas/Configuration"
+            }
+          },
+          "type": "object",
+          "required": [
+            "kind",
+            "name",
+            "version",
+            "description",
+            "configuration"
+          ],
+          "title": "Application"
+        },
+        "ApplicationResponse": {
+          "properties": {
+            "kind": {
+              "type": "string",
+              "title": "Kind"
+            },
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "version": {
+              "type": "string",
+              "title": "Version"
+            },
+            "description": {
+              "type": "string",
+              "title": "Description"
+            },
+            "state": {
+              "type": "string",
+              "title": "State"
+            },
+            "json_data": {
+              "type": "object",
+              "title": "Json Data"
+            },
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          "type": "object",
+          "required": [
+            "kind",
+            "name",
+            "version",
+            "description",
+            "state",
+            "id"
+          ],
+          "title": "ApplicationResponse"
+        },
+        "Configuration": {
+          "properties": {
+            "specification": {
+              "$ref": "#/components/schemas/Specification"
+            },
+            "settings": {
+              "$ref": "#/components/schemas/Settings"
+            }
+          },
+          "type": "object",
+          "required": [
+            "specification",
+            "settings"
+          ],
+          "title": "Configuration"
+        },
+        "ExposedPort": {
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "port": {
+              "type": "integer",
+              "title": "Port"
+            },
+            "protocol": {
+              "type": "string",
+              "title": "Protocol"
+            },
+            "sharedNamespace": {
+              "type": "boolean",
+              "title": "Sharednamespace"
+            }
+          },
+          "type": "object",
+          "required": [
+            "name",
+            "port",
+            "protocol",
+            "sharedNamespace"
+          ],
+          "title": "ExposedPort"
+        },
+        "HTTPValidationError": {
+          "properties": {
+            "detail": {
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              },
+              "type": "array",
+              "title": "Detail"
+            }
+          },
+          "type": "object",
+          "title": "HTTPValidationError"
+        },
+        "Log": {
+          "properties": {
+            "level": {
+              "type": "string",
+              "title": "Level"
+            }
+          },
+          "type": "object",
+          "required": [
+            "level"
+          ],
+          "title": "Log"
+        },
+        "Settings": {
+          "properties": {
+            "settingAaa": {
+              "type": "object",
+              "title": "Settingaaa"
+            },
+            "settingAab": {
+              "type": "object",
+              "title": "Settingaab"
+            }
+          },
+          "type": "object",
+          "required": [
+            "settingAaa",
+            "settingAab"
+          ],
+          "title": "Settings"
+        },
+        "Specification": {
+          "properties": {
+            "jvmConfig": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "title": "Jvmconfig"
+            },
+            "exposedPorts": {
+              "items": {
+                "$ref": "#/components/schemas/ExposedPort"
+              },
+              "type": "array",
+              "title": "Exposedports"
+            },
+            "log": {
+              "$ref": "#/components/schemas/Log"
+            },
+            "environmentVariables": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "title": "Environmentvariables"
+            }
+          },
+          "type": "object",
+          "required": [
+            "jvmConfig",
+            "exposedPorts",
+            "log",
+            "environmentVariables"
+          ],
+          "title": "Specification"
+        },
+        "ValidationError": {
+          "properties": {
+            "loc": {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "type": "array",
+              "title": "Location"
+            },
+            "msg": {
+              "type": "string",
+              "title": "Message"
+            },
+            "type": {
+              "type": "string",
+              "title": "Error Type"
+            }
+          },
+          "type": "object",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "title": "ValidationError"
+        }
+      }
+    }
+  }
