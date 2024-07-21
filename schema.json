@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Application",
+    "type": "object",
+    "properties": {
+      "kind": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string",
+        "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+      },
+      "description": {
+        "type": "string"
+      },
+      "configuration": {
+        "type": "object",
+        "properties": {
+          "specification": {
+            "type": "object",
+            "properties": {
+              "jvmConfig": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "exposedPorts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "port": { "type": "integer" },
+                    "protocol": { "type": "string" },
+                    "sharedNamespace": { "type": "boolean" }
+                  },
+                  "required": ["name", "port", "protocol", "sharedNamespace"]
+                }
+              },
+              "log": {
+                "type": "object",
+                "properties": {
+                  "level": { "type": "string" }
+                },
+                "required": ["level"]
+              },
+              "environmentVariables": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["jvmConfig", "exposedPorts", "log", "environmentVariables"]
+          },
+          "settings": {
+            "type": "object",
+            "properties": {
+              "settingAaa": { "type": "object" },
+              "settingAab": { "type": "object" }
+            },
+            "required": ["settingAaa", "settingAab"]
+          }
+        },
+        "required": ["specification", "settings"]
+      }
+    },
+    "required": ["kind", "name", "version", "description", "configuration"]
+}
+  
